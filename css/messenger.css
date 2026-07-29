@@ -76,7 +76,7 @@
 }
 .messages-empty img { width: 28px; height: 28px; opacity: .35; }
 .messages-refresh {
-  position: absolute; left: 0; right: 0; top: 76px; z-index: 7; height: 32px;
+  position: absolute; left: 0; right: 0; top: calc(43px + var(--safe-top)); z-index: 7; height: 32px;
   display: flex; align-items: center; justify-content: center; gap: 8px; color: rgba(255,255,255,.55);
   font-size: 13px; opacity: 0; transform: translateY(-14px); transition: opacity .18s, transform .18s; pointer-events: none;
 }
@@ -109,7 +109,7 @@
 .conversation-person span { margin-top: 2px; color: rgba(255,255,255,.55); font-size: 15px; font-weight: 500; line-height: 18px; }
 .conversation-messages {
   position: absolute; inset: 0;
-  padding: 127px 20px calc(var(--composer-height) + 12px + var(--kb) * 1px);
+  padding: calc(94px + var(--safe-top)) 20px calc(var(--composer-height) + 12px + var(--kb) * 1px);
   overflow-x: hidden; overflow-y: auto; scrollbar-width: none; overscroll-behavior: contain;
   transition: padding-bottom .15s ease;
 }

@@ -35,6 +35,6 @@
 }
 .glow--still .blob { animation: none; }
 /* ─────────────── Start Page ─────────────── */
-.start-logo { position: absolute; top: 282px; left: 50%; width: 169px; transform: translateX(-50%); }
+.start-logo { position: absolute; top: calc(249px + var(--safe-top)); left: 50%; width: 169px; transform: translateX(-50%); }
 .start-bottom { position: absolute; left: var(--gutter); right: var(--gutter); bottom: calc(60px + var(--safe-bottom)); }
 .start-bottom .btn { margin-top: 22px; }

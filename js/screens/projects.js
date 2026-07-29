@@ -1,12 +1,13 @@
 /* Projects: лента заказов, вкладки, экран проекта */
-import { play as playVideo } from '../ui/video.js';
 import { show } from '../core/router.js';
 import { state } from '../core/state.js';
 import { PROFILE_PHOTOS, THEMATIC_VIDEO_LIBRARY, UNIQUE_VERTICAL_VIDEO_LIBRARY, compactMetric, generatedProfilePhotos } from '../data/catalog.js';
 import { DEFAULT_AVATAR_URL, THEMED_PHOTO_IDS } from '../data/photos.js';
 import { openExternalProfile } from '../screens/profile.js';
 import { shuffled } from '../screens/start.js';
+import { swipeToDismiss } from '../ui/dismiss.js';
 import { flagFor } from '../ui/picker.js';
+import { play as playVideo } from '../ui/video.js';
 
 /* ── Projects: локальная лента вымышленных заказов ── */
 const freeLimit = 7;
@@ -522,6 +523,8 @@ function closeProjectDetail() {
 const projectMediaViewer = document.getElementById('projectMediaViewer');
 const projectMediaViewerImage = document.getElementById('projectMediaViewerImage');
 const projectMediaViewerVideo = document.getElementById('projectMediaViewerVideo');
+const projectMediaViewerStage = projectMediaViewer.querySelector('.project-media-viewer__stage');
+const projectMediaViewerBackdrop = document.getElementById('projectMediaViewerBackdrop');
 let projectMediaViewerClearTimer;
 
 function projectAuthorProfile(project) {
@@ -568,6 +571,14 @@ function openProjectMedia(project, mediaIndex) {
   openProjectMediaItem(project.media[mediaIndex]);
 }
 
+/* Фото и видео из карточки проекта тоже закрываются смахиванием */
+swipeToDismiss(projectMediaViewer, {
+  stage: projectMediaViewerStage,
+  backdrop: projectMediaViewerBackdrop,
+  onClose: () => closeProjectMedia(),
+  isOpen: () => projectMediaViewer.classList.contains('is-open')
+});
+
 function closeProjectMedia() {
   if (!projectMediaViewer.classList.contains('is-open')) return;
   projectMediaViewerVideo.pause();
@@ -588,7 +599,7 @@ projectMediaViewerVideo.addEventListener('click', () => {
   if (projectMediaViewerVideo.paused) playVideo(projectMediaViewerVideo);
   else projectMediaViewerVideo.pause();
 });
-document.getElementById('projectMediaViewerBackdrop').addEventListener('click', closeProjectMedia);
+projectMediaViewerBackdrop.addEventListener('click', closeProjectMedia);
 document.getElementById('projectMediaViewerBack').addEventListener('click', closeProjectMedia);
 
 projectsPager.addEventListener('click', event => {

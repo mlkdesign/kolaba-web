@@ -41,7 +41,7 @@
 }
 .projects-search-button span[hidden] { display: none; }
 .projects-tabs {
-  position: absolute; top: 110px; left: 26px; right: 26px; z-index: 8;
+  position: absolute; top: calc(77px + var(--safe-top)); left: var(--gutter); right: var(--gutter); z-index: 8;
   height: 64px; display: flex; align-items: flex-start; justify-content: center; gap: 32px;
 }
 .projects-tabs button {
@@ -59,7 +59,7 @@
   transition: transform .25s cubic-bezier(.2,.8,.2,1), width .25s cubic-bezier(.2,.8,.2,1);
 }
 .projects-search {
-  position: absolute; z-index: 9; top: 184px; left: 16px; right: 16px; height: 56px;
+  position: absolute; z-index: 9; top: calc(151px + var(--safe-top)); left: 16px; right: 16px; height: 56px;
   border: 1px solid var(--hairline); border-radius: 999px; background: #151515;
   display: flex; align-items: center; gap: 12px; padding: 0 16px;
 }
@@ -75,7 +75,7 @@
   background: rgba(255,255,255,.12); color: #fff; font: 300 23px/26px "Geist"; cursor: pointer;
 }
 .projects-refresh {
-  position: absolute; top: 169px; left: 0; right: 0; z-index: 5; height: 38px;
+  position: absolute; top: calc(136px + var(--safe-top)); left: 0; right: 0; z-index: 5; height: 38px;
   display: flex; justify-content: center; align-items: center; gap: 8px;
   color: rgba(255,255,255,.55); font-size: 13px; opacity: 0; transform: translateY(-18px);
   transition: opacity .18s, transform .18s; pointer-events: none;
@@ -88,11 +88,11 @@
 .projects-refresh.is-loading i { animation: project-spin .7s linear infinite; }
 @keyframes project-spin { to { transform: rotate(360deg); } }
 .projects-pager {
-  position: absolute; z-index: 2; top: 169px; left: 0; right: 0; bottom: 0;
+  position: absolute; z-index: 2; top: calc(136px + var(--safe-top)); left: 0; right: 0; bottom: 0;
   overflow: hidden; touch-action: pan-y;
 }
-.screen-page[data-screen="projects"].is-searching .projects-pager { top: 250px; }
-.screen-page[data-screen="projects"].is-searching .projects-refresh { top: 247px; }
+.screen-page[data-screen="projects"].is-searching .projects-pager { top: calc(217px + var(--safe-top)); }
+.screen-page[data-screen="projects"].is-searching .projects-refresh { top: calc(214px + var(--safe-top)); }
 .projects-page {
   position: absolute; inset: 0; display: block; overflow-y: auto; overflow-x: hidden;
   padding: 10px 0 0; scrollbar-width: none; overscroll-behavior: contain;

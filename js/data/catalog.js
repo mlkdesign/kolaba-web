@@ -1,5 +1,6 @@
 /* Тематический каталог видео и фотографий */
 import { THEMED_PHOTO_IDS } from '../data/photos.js';
+import { swipeToDismiss } from '../ui/dismiss.js';
 
 /* ── Общий тематический Pexels-каталог для профиля, ленты и проектов ── */
 const PEXELS_PHOTO_IDS = Object.values(THEMED_PHOTO_IDS).flat();
@@ -229,6 +230,14 @@ function closePhoto() {
 }
 
 mediaViewerBackdrop.addEventListener('click', closePhoto);
+
+/* Кнопки закрытия на экране нет — закрываем смахиванием вверх или вниз */
+swipeToDismiss(mediaViewer, {
+  stage: mediaViewerImage,
+  backdrop: mediaViewerBackdrop,
+  onClose: closePhoto,
+  isOpen: () => mediaViewer.classList.contains('is-open')
+});
 mediaViewerImage.addEventListener('pointerdown', event => {
   viewerPointerStart = event.clientX;
   mediaViewerImage.setPointerCapture?.(event.pointerId);

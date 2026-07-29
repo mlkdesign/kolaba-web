@@ -1,6 +1,6 @@
 /* ─────────────── Sign Up / Log In ─────────────── */
 
-.auth-body { padding-top: 62px; text-align: center; }
+.auth-body { padding-top: calc(29px + var(--safe-top)); text-align: center; }
 .auth-logo { width: 148px; margin: 46px auto 0; display: block; }
 .auth-body > .btn--primary {
   position: absolute; left: var(--gutter); right: var(--gutter); bottom: calc(34px + var(--safe-bottom)); z-index: 5;

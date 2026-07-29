@@ -1,5 +1,4 @@
 /* Уведомления и переходы из них */
-import { play as playVideo } from '../ui/video.js';
 import { show } from '../core/router.js';
 import { state } from '../core/state.js';
 import { UNIQUE_VERTICAL_VIDEO_LIBRARY, VIDEO_HOLD_DELAY, compactMetric, generatedProfilePhotos, updateVideoProgress } from '../data/catalog.js';
@@ -7,6 +6,7 @@ import { PHOTOS } from '../data/photos.js';
 import { openExternalProfile } from '../screens/profile.js';
 import { PROJECT_AUTHOR_PROFILES, openProjectDetail, projects, setProjectsTab } from '../screens/projects.js';
 import { countryByCode, flagFor } from '../ui/picker.js';
+import { play as playVideo } from '../ui/video.js';
 
 /* ── Notifications ── */
 const notificationsList = document.getElementById('notificationsList');

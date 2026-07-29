@@ -19,7 +19,8 @@ const pagerWidth = () => pagerWidthValue || pager.clientWidth || window.innerWid
 function updateProfileTabsMask() {
   const scrollRect = profileScroll.getBoundingClientRect();
   const tabsRect = tabs.getBoundingClientRect();
-  const reachedStickyPosition = tabsRect.top <= scrollRect.top + 68;
+  const safeTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-top')) || 0;
+  const reachedStickyPosition = tabsRect.top <= scrollRect.top + safeTop + 2;
   tabs.classList.toggle('is-stuck', profileScroll.scrollTop > 0 && reachedStickyPosition);
 }
 

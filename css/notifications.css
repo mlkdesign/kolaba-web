@@ -83,7 +83,7 @@
 .notification-follow.is-following { background: var(--pink); color: #fff; }
 .notification-follow.is-bouncing { animation: notification-follow-bounce .3s cubic-bezier(.2,.8,.3,1.35); }
 .notifications-refresh {
-  position: absolute; left: 0; right: 0; top: 116px; z-index: 5; height: 34px;
+  position: absolute; left: 0; right: 0; top: calc(83px + var(--safe-top)); z-index: 5; height: 34px;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   color: rgba(255,255,255,.55); font-size: 13px; opacity: 0; transform: translateY(-16px);
   transition: opacity .18s, transform .18s; pointer-events: none;

@@ -171,16 +171,17 @@ function closeProfilePhotoViewer(animated = true) {
   else finishClosingProfilePhotoViewer();
 }
 
-function dismissProfilePhotoDown(distance) {
+/* Улетает в ту сторону, куда смахнули: вниз при distance > 0, вверх при < 0 */
+function dismissProfilePhotoAway(distance) {
   if (profilePhotoClosing) return;
   closeProfilePhotoMenu();
   setProfilePhotoZoom(false);
   profilePhotoClosing = true;
   const viewerHeight = profilePhotoViewer.getBoundingClientRect().height;
-  const start = Math.max(0, distance);
+  const end = distance < 0 ? -viewerHeight : viewerHeight;
   profilePhotoImageShell.animate([
-    { transform: `translate3d(0,${start}px,0) scale(.94)`, opacity: 1 },
-    { transform: `translate3d(0,${viewerHeight}px,0) scale(.85)`, opacity: .25 }
+    { transform: `translate3d(0,${distance}px,0) scale(.94)`, opacity: 1 },
+    { transform: `translate3d(0,${end}px,0) scale(.85)`, opacity: .25 }
   ], { duration: 220, easing: 'cubic-bezier(.32,.72,0,1)', fill: 'forwards' });
   const fade = profilePhotoBackdrop.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: 'forwards' });
   fade.addEventListener('finish', finishClosingProfilePhotoViewer, { once: true });
@@ -270,8 +271,9 @@ profilePhotoStage.addEventListener('pointermove', event => {
   event.preventDefault();
   profilePhotoViewer.classList.add('is-dragging');
   if (profilePhotoGesture.axis === 'y') {
-    const distance = Math.max(0, dy);
-    const localDistance = distance;
+    // смахнуть можно и вниз, и вверх
+    const distance = dy;
+    const localDistance = Math.abs(distance);
     const scale = Math.max(.85, 1 - localDistance / 800);
     profilePhotoImageShell.style.transform = `translate3d(0,${distance}px,0) scale(${scale})`;
     profilePhotoBackdrop.style.opacity = String(Math.max(0, 1 - localDistance / 260));
@@ -300,8 +302,8 @@ function settleProfilePhotoGesture(event, cancelled = false) {
     closeProfilePhotoViewer();
     return;
   }
-  if (gesture.axis === 'y' && (localY > 120 || velocity > 850)) {
-    dismissProfilePhotoDown(Math.max(0, dy));
+  if (gesture.axis === 'y' && (Math.abs(localY) > 120 || Math.abs(velocity) > 850)) {
+    dismissProfilePhotoAway(dy);
     return;
   }
   if (gesture.axis === 'x' && Math.abs(localX) > 54) {

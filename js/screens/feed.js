@@ -1,5 +1,4 @@
 /* Лента видео и ролики автора */
-import { play as playVideo } from '../ui/video.js';
 import { show } from '../core/router.js';
 import { state } from '../core/state.js';
 import { PROFILE_REEL_MEDIA, UNIQUE_VERTICAL_VIDEO_LIBRARY, VIDEO_HOLD_DELAY, compactMetric, generatedProfilePhotos, normalizedAuthorPhotos, updateVideoProgress } from '../data/catalog.js';
@@ -8,6 +7,7 @@ import { openExternalProfile, profileAvatar, profilePage } from '../screens/prof
 import { shuffled } from '../screens/start.js';
 import { currentProfileVideos } from '../ui/photo-viewer.js';
 import { countryByCode, flagFor } from '../ui/picker.js';
+import { play as playVideo } from '../ui/video.js';
 
 /* ── Полноэкранная вертикальная лента видео ── */
 const FEED_PROFILE_COUNT = 20;

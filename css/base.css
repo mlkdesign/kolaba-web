@@ -16,13 +16,15 @@
   --fill: rgba(255, 255, 255, .04);
   --placeholder: rgba(255, 255, 255, .45);
   /* Нижнее меню растёт на высоту home indicator, вместе с ним едут все отступы,
-     которые считаются от --tabbar-height */
-  --tabbar-height: calc(79px + var(--safe-bottom));
+     которые считаются от --tabbar-height. Поля над иконками и под ними равны. */
+  --tabbar-height: calc(67px + var(--safe-bottom));
   --top-control-size: 40px;
-  /* Верхние контролы опускаются ниже выреза, но не выше, чем было на макете */
-  --top-control-y: max(55px, calc(var(--safe-top) + 8px));
+  /* Отступы сверху отсчитываются от нижнего края системной строки: на макете
+     её изображал фейковый статус-бар высотой 33px, теперь её роль играет
+     env(safe-area-inset-top). */
+  --top-control-y: calc(22px + var(--safe-top));
   --top-control-side: 24px;
-  --top-center-y: max(75px, calc(var(--safe-top) + 28px));
+  --top-center-y: calc(42px + var(--safe-top));
   --top-logo-height: 26px;
 
   /* Боковые поля контента и аватар профиля — ужимаются на узких экранах */
@@ -38,9 +40,11 @@
 
   /* Безопасные зоны выреза и home indicator */
   --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  /* Шапки экранов: 47px по макету, ниже выреза — если он глубже */
-  --head-pad-top: max(47px, calc(var(--safe-top) + 8px));
+  /* В браузере нижний край занимает панель Safari, и её 100dvh уже вычитает.
+     Home indicator появляется только в standalone — там инсет и добавляем. */
+  --safe-bottom: 0px;
+  /* Шапки экранов */
+  --head-pad-top: calc(14px + var(--safe-top));
   --head-height: calc(64px + var(--head-pad-top));
 }
 * { box-sizing: border-box; }
@@ -88,6 +92,10 @@ body {
 /* Фолбэк для старых Safari, где нет 100dvh */
 @supports not (height: 100dvh) {
   :root { --app-h: var(--vh); }
+}
+
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  :root { --safe-bottom: env(safe-area-inset-bottom, 0px); }
 }
 
 /* Узкие экраны от 320px: поля уже, аватар меньше */
@@ -169,7 +177,7 @@ input, textarea, select { font-size: 16px; }
 /* ─────────────── Общая раскладка внутренних экранов ─────────────── */
 .page-body {
   position: absolute; inset: 0;
-  padding: 108px var(--gutter) 24px;
+  padding: calc(75px + var(--safe-top)) var(--gutter) 24px;
   overflow-x: hidden; overflow-y: auto;
   scrollbar-width: none;
   overscroll-behavior: contain;
@@ -238,7 +246,7 @@ input, textarea, select { font-size: 16px; }
 .tabbar {
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 20;
   height: var(--tabbar-height);
-  display: flex; padding: 14px 16px max(10px, calc(26px + var(--safe-bottom)));
+  display: flex; padding: 14px 16px calc(14px + var(--safe-bottom));
   background: rgba(11, 11, 11, .8);
   backdrop-filter: blur(32px);
 }

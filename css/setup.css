@@ -19,7 +19,7 @@
 .pager-dots { display: flex; align-items: center; gap: 6px; }
 .pager-dots i { width: 8px; height: 4px; border-radius: 999px; background: rgba(255,255,255,.35); transition: width .3s; }
 .pager-dots i.is-active { width: 28px; background: #fff; }
-.setup-body { padding-top: 112px; padding-bottom: 120px; }
+.setup-body { padding-top: calc(79px + var(--safe-top)); padding-bottom: 120px; }
 .setup-body .display-36 { margin-bottom: 4px; }
 /* ─────────────── Выбор страны и местоположения ─────────────── */
 .picker {
