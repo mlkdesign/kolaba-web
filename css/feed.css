@@ -103,10 +103,11 @@
 .feed-position i.is-active { width: 28px; background: #fff; }
 .feed-head__button > .feed-search-icon { width: 16px; height: 16px; display: block; opacity: 1; }
 .feed-content {
-  position: absolute; left: 16px; right: 16px; bottom: 112px; z-index: 3;
+  position: absolute; left: 16px; right: 16px; z-index: 3;
+  bottom: calc(16px + var(--tabbar-height));
   color: #fff;
 }
-.feed-card .feed-content { bottom: calc(112px - var(--tabbar-height)); }
+.feed-card .feed-content { bottom: 16px; }
 .feed-author-row { display: flex; align-items: center; gap: 8px; }
 .feed-avatar-button {
   width: 32px; height: 32px; flex: none; padding: 0; border: 0; border-radius: 50%;

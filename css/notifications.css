@@ -109,7 +109,7 @@
 }
 .notification-clip-stage::before { top: 0; height: 170px; background: linear-gradient(to bottom, rgba(0,0,0,.55), transparent); }
 .notification-clip-stage::after { bottom: 0; height: 340px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,.78)); }
-.notification-clip-content { bottom: 32px; }
+.notification-clip-content { bottom: 16px; }
 .notification-clip-back { position: absolute; left: var(--top-control-side); top: var(--top-control-y); z-index: 9; }
 .notification-project__logo {
   position: absolute; left: 50%; top: calc(var(--top-center-y) - 13px);
