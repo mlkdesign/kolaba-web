@@ -183,7 +183,7 @@ function syncChatBadges() {
 }
 
 function renderChats(preserveScroll = true) {
-  const scrollTop = preserveScroll ? messagesList.scrollTop : 0;
+  const scrollTop = preserveScroll ? window.scrollY : 0;
   const ordered = sortedChats();
   messagesList.innerHTML = ordered.length
     ? ordered.map(chatRowMarkup).join('')
@@ -191,7 +191,7 @@ function renderChats(preserveScroll = true) {
   messagesList.querySelectorAll('.chat-avatar').forEach((image, index) => {
     image.addEventListener('error', () => { image.src = PHOTOS[index % PHOTOS.length]; }, { once: true });
   });
-  messagesList.scrollTop = scrollTop;
+  window.scrollTo({ top: scrollTop, behavior: 'auto' });
   messagesHead.classList.toggle('is-scrolled', scrollTop > 0);
   syncChatBadges();
 }
@@ -274,7 +274,7 @@ function renderConversation(keepPosition = false) {
 }
 
 function openConversation(chat, options = {}) {
-  messagesListScrollTop = messagesList.scrollTop;
+  messagesListScrollTop = window.scrollY;
   currentChatId = chat.id;
   conversationReturnProfile = options.returnProfile || null;
   conversationReturnScreen = options.returnScreen || 'messages';
@@ -282,6 +282,8 @@ function openConversation(chat, options = {}) {
   renderChats();
   renderConversation();
   messagesScreen.classList.add('is-conversation-open');
+  // переписка привязана к окну — документ на это время не скроллится
+  document.documentElement.classList.add('is-locked');
   conversationView.setAttribute('aria-hidden', 'false');
 }
 
@@ -350,11 +352,12 @@ window.openMessengerConversationWithProfile = (profile, returnScreen = 'feed') =
 function closeConversation() {
   if (!messagesScreen.classList.contains('is-conversation-open')) return;
   messagesScreen.classList.remove('is-conversation-open');
+  document.documentElement.classList.remove('is-locked');
   conversationView.setAttribute('aria-hidden', 'true');
   conversationReturnProfile = null;
   conversationReturnScreen = 'messages';
   renderChats(false);
-  requestAnimationFrame(() => { messagesList.scrollTop = messagesListScrollTop; });
+  requestAnimationFrame(() => window.scrollTo({ top: messagesListScrollTop, behavior: 'auto' }));
 }
 
 function leaveConversation() {
@@ -499,9 +502,9 @@ messagesList.addEventListener('click', event => {
   openConversation(chat);
 });
 
-messagesList.addEventListener('scroll', () => messagesHead.classList.toggle('is-scrolled', messagesList.scrollTop > 0), { passive: true });
+window.addEventListener('scroll', () => messagesHead.classList.toggle('is-scrolled', window.scrollY > 0), { passive: true });
 messagesList.addEventListener('pointerdown', event => {
-  if (messagesList.scrollTop > 0 || event.target.closest('.chat-row__action')) return;
+  if (window.scrollY > 0 || event.target.closest('.chat-row__action')) return;
   messagesPull = { y: event.clientY, distance: 0 };
 });
 messagesList.addEventListener('pointermove', event => {

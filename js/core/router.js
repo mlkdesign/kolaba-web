@@ -18,7 +18,7 @@ const SCREENS = ['start', 'auth', 'setup1', 'setup2', 'projects', 'messages', 'f
    блокируется. Все остальные скроллит сам документ — только так Safari
    сворачивает свою нижнюю панель при прокрутке. */
 const LOCKED_SCREENS = new Set(['start', 'auth', 'setup1', 'setup2', 'feed',
-  'profileReels', 'notificationClip', 'notificationProject', 'messages']);
+  'profileReels', 'notificationClip', 'notificationProject']);
 
 let currentScreen = 'start';
 
@@ -31,7 +31,10 @@ function applyScreen(name) {
     page.classList.toggle('is-active', page.dataset.screen === name);
   });
 
-  document.documentElement.classList.toggle('is-locked', LOCKED_SCREENS.has(name));
+  // на экране сообщений блокировка зависит от того, открыта ли переписка
+  const conversationOpen = document.getElementById('messagesScreen')?.classList.contains('is-conversation-open');
+  document.documentElement.classList.toggle('is-locked',
+    LOCKED_SCREENS.has(name) || (name === 'messages' && conversationOpen));
   // на новом экране начинаем сверху
   if (name !== currentScreen) window.scrollTo({ top: 0, behavior: 'auto' });
 

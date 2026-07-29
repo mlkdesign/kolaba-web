@@ -249,7 +249,8 @@ html.is-locked .screen-page {
 /* ─────────────── Projects ─────────────── */
 .screen-page[data-screen="projects"] { background: var(--app-bg); }
 .screen-page[data-screen="projects"]::before {
-  content: ''; position: absolute; left: 0; right: 0; top: 0; z-index: 7; height: 169px;
+  content: ''; position: absolute; left: 0; right: 0; top: 0; z-index: 7;
+  height: calc(136px + var(--safe-top));
   background: rgba(11,11,11,.80); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
   pointer-events: none;
 }

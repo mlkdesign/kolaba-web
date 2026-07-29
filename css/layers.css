@@ -9,6 +9,9 @@
    расползаются шире колонки приложения на широком экране. */
 .tabbar,
 .upload-more,
+.messages-head,
+.messages-top-blur,
+.messages-refresh,
 .settings-head,
 .settings-top-blur,
 .settings-dialog,

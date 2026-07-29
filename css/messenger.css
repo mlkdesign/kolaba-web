@@ -2,10 +2,16 @@
 
 /* ─────────────── Messenger ─────────────── */
 .messenger-screen { --composer-height: 92px; background: var(--app-bg); }
-.messages-list-view,
-.conversation-view { position: absolute; inset: 0; background: var(--app-bg); }
+/* Список чатов лежит в потоке — его скроллит документ, поэтому Safari
+   сворачивает свою панель. Переписка остаётся привязанной к окну: там поле
+   ввода поднимается под клавиатуру и страница не должна уезжать. */
+.messages-list-view { position: relative; min-height: var(--app-h); background: var(--app-bg); }
+.conversation-view {
+  position: fixed; inset: 0; left: 0; right: 0; margin: 0 auto; max-width: 480px;
+  background: var(--app-bg);
+}
 .messages-head {
-  position: absolute; left: 0; right: 0; top: 0; z-index: 8; height: var(--head-height);
+  top: 0; z-index: 8; height: var(--head-height);
   display: flex; align-items: center; justify-content: center; padding: var(--head-pad-top) 24px 8px;
   background: transparent;
 }
@@ -26,9 +32,8 @@
   background: linear-gradient(to bottom, rgba(11,11,11,.72) 0%, rgba(11,11,11,.28) 58%, transparent 100%);
 }
 .messages-list {
-  position: absolute; inset: 0; padding: var(--head-height) 0 calc(var(--tabbar-height) + 12px);
-  overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
-  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  position: static; overflow: visible;
+  padding: var(--head-height) 0 calc(var(--tabbar-height) + 12px);
 }
 .messages-list::-webkit-scrollbar { display: none; }
 .chat-row {
