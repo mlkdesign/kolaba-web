@@ -42,7 +42,6 @@
 .projects-search-button span[hidden] { display: none; }
 .projects-tabs {
   top: calc(77px + var(--safe-top)); z-index: 8;
-  width: calc(100% - 2 * var(--gutter)); max-width: calc(480px - 2 * var(--gutter));
   height: 64px; display: flex; align-items: flex-start; justify-content: center; gap: 32px;
 }
 .projects-tabs button {
@@ -61,7 +60,6 @@
 }
 .projects-search {
   z-index: 9; top: calc(151px + var(--safe-top)); height: 56px;
-  width: calc(100% - 32px); max-width: 448px;
   border: 1px solid var(--hairline); border-radius: 999px; background: #151515;
   display: flex; align-items: center; gap: 12px; padding: 0 16px;
 }
@@ -340,7 +338,6 @@
 .project-detail:not(.is-mine) .project-detail__content { padding-bottom: calc(var(--tabbar-height) + 80px); }
 .project-detail__apply {
   bottom: calc(16px + var(--safe-bottom)); z-index: 12;
-  width: calc(100% - 32px); max-width: 448px;
   height: 48px; padding: 0 24px; border: 0; border-radius: 999px; background: #fff; color: #000;
   font: 600 16px/1 "Geist"; cursor: pointer; transition: transform .2s cubic-bezier(.22,.78,.22,1);
 }

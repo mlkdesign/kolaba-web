@@ -102,7 +102,6 @@
 .grid--video figure { aspect-ratio: 9 / 16; }
 .upload-more {
   bottom: calc(var(--tabbar-height) + 16px); z-index: 7;
-  width: calc(100% - 2 * var(--gutter)); max-width: calc(480px - 2 * var(--gutter));
   box-shadow: 0 8px 28px rgba(0, 0, 0, .42);
 }
 .screen-page[data-screen="profile"].is-external-profile .upload-more { display: none; }
