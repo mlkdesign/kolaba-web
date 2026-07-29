@@ -14,6 +14,12 @@ const SCREENS = ['start', 'auth', 'setup1', 'setup2', 'projects', 'messages', 'f
   'profileReels', 'notifications', 'notificationClip', 'notificationProject',
   'profile', 'settings'];
 
+/* Экраны, которые занимают ровно окно и листаются сами: на них документ
+   блокируется. Все остальные скроллит сам документ — только так Safari
+   сворачивает свою нижнюю панель при прокрутке. */
+const LOCKED_SCREENS = new Set(['start', 'auth', 'setup1', 'setup2', 'feed',
+  'profileReels', 'notificationClip', 'notificationProject', 'messages']);
+
 let currentScreen = 'start';
 
 /* Показать экран, ничего не записывая в историю. */
@@ -24,6 +30,10 @@ function applyScreen(name) {
   document.querySelectorAll('.screen-page').forEach(page => {
     page.classList.toggle('is-active', page.dataset.screen === name);
   });
+
+  document.documentElement.classList.toggle('is-locked', LOCKED_SCREENS.has(name));
+  // на новом экране начинаем сверху
+  if (name !== currentScreen) window.scrollTo({ top: 0, behavior: 'auto' });
 
   if (name !== 'notificationClip') document.getElementById('notificationClipVideo')?.pause();
   if (name !== 'profileReels') pauseProfileReels();

@@ -178,7 +178,7 @@ function markAllNotificationsRead() {
 }
 
 function renderNotifications() {
-  const scrollPosition = notificationsList.scrollTop;
+  const scrollPosition = window.scrollY;
   if (!notifications.length) {
     notificationsList.innerHTML = '<div class="notifications-empty"><img src="assets/icons/IconBell.svg" alt=""><span>No notifications yet</span></div>';
   } else {
@@ -190,7 +190,7 @@ function renderNotifications() {
       return `<section class="notification-section" data-notification-group="${group}"><h3 class="notification-section__title">${label}${badge}</h3>${items.map(notificationRowMarkup).join('')}</section>`;
     }).join('');
   }
-  notificationsList.scrollTop = scrollPosition;
+  window.scrollTo({ top: scrollPosition, behavior: 'auto' });
   notificationsList.querySelectorAll('.notification-row__avatar').forEach((image, index) => {
     image.addEventListener('error', () => { image.src = PHOTOS[index % PHOTOS.length]; }, { once: true });
   });
@@ -360,7 +360,7 @@ notificationsMenu.addEventListener('click', event => {
 
 let notificationPull = null;
 notificationsList.addEventListener('pointerdown', event => {
-  if (notificationsList.scrollTop > 0) return;
+  if (window.scrollY > 0) return;
   notificationPull = { y: event.clientY, distance: 0 };
 });
 notificationsList.addEventListener('pointermove', event => {
@@ -386,7 +386,7 @@ notificationsList.addEventListener('pointerup', () => {
     const fresh = Array.from({ length: amount }, () => makeNotification('today', true));
     notifications = [...fresh, ...notifications];
     renderNotifications();
-    notificationsList.scrollTop = 0;
+    window.scrollTo({ top: 0, behavior: 'auto' });
     notificationsRefresh.classList.remove('is-visible', 'is-loading');
   }, 550);
 });

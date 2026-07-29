@@ -1,0 +1,44 @@
+/* ─────────────── Слои, привязанные к окну ─────────────── */
+
+/* Подключается последним: эти правила должны перебивать поэкранные, где те же
+   элементы объявлены как position: absolute внутри экрана. Теперь длинные
+   экраны скроллит документ, поэтому шапки, нижнее меню и полноэкранные
+   просмотры обязаны быть привязаны к окну, а не к странице. */
+
+/* Слои, привязанные к окну: не уезжают при скролле документа и не
+   расползаются шире колонки приложения на широком экране. */
+.tabbar,
+.upload-more,
+.settings-head,
+.settings-top-blur,
+.settings-dialog,
+.notifications-title,
+.notifications-top-blur,
+.notifications-refresh,
+.projects-head,
+.projects-tabs,
+.projects-search,
+.projects-refresh,
+.projects-overlay,
+.project-detail__head,
+.project-detail__top-blur,
+.project-detail__apply,
+.media-viewer,
+.project-media-viewer,
+.profile-photo-viewer,
+.picker,
+.feed-menu {
+  position: fixed;
+  left: 0; right: 0;
+  margin-left: auto; margin-right: auto;
+  max-width: 480px;
+}
+.settings-toast { position: fixed; }
+
+/* Матовая подложка под шапкой ленты проектов */
+.screen-page[data-screen="projects"]::before {
+  position: fixed;
+  left: 0; right: 0;
+  margin-left: auto; margin-right: auto;
+  max-width: 480px;
+}

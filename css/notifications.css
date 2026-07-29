@@ -1,20 +1,20 @@
 /* ─────────────── Уведомления ─────────────── */
 
 .notifications-head {
-  position: absolute; inset: 0; z-index: 9; pointer-events: none;
+  position: fixed; inset: 0; left: 0; right: 0; margin: 0 auto; max-width: 480px;
+  z-index: 9; pointer-events: none;
 }
 .notifications-more {
   position: absolute; top: var(--top-control-y); right: var(--top-control-side); pointer-events: auto;
 }
 .notifications-more > img { width: 16px; height: 16px; }
 .notifications-list {
-  position: absolute; inset: 0;
-  padding: var(--head-height) 0 calc(var(--tabbar-height) + 28px); overflow-x: hidden; overflow-y: auto;
-  overscroll-behavior: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  position: static; overflow: visible;
+  padding: var(--head-height) 0 calc(var(--tabbar-height) + 28px);
 }
 .notifications-list::-webkit-scrollbar { display: none; }
 .notifications-title {
-  position: absolute; left: 0; right: 0; top: 0; z-index: 7; height: var(--head-height); margin: 0; padding: var(--head-pad-top) 24px 8px;
+  top: 0; z-index: 7; height: var(--head-height); margin: 0 auto; padding: var(--head-pad-top) 24px 8px;
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; font-weight: 600; white-space: nowrap; pointer-events: none;
 }

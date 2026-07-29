@@ -193,12 +193,20 @@ function layoutProjectsTabs(progress = projectTabNames.indexOf(activeProjectTab)
   projectsTabsLine.style.transform = `translateX(${left}px)`;
 }
 
+/* Высота пейджера равна высоте видимой страницы — вкладки разной длины,
+   а скроллит их сам документ. */
 function layoutProjectPages(progress = projectTabNames.indexOf(activeProjectTab), animated = true) {
   const pages = [...projectsPager.querySelectorAll('[data-project-page]')];
-  pages.forEach((page, index) => {
-    page.style.transition = animated ? '' : 'none';
-    page.style.transform = `translateX(${(index - progress) * 100}%)`;
-  });
+  const index = Math.max(0, Math.min(pages.length - 1, Math.round(progress)));
+  const page = pages[index];
+  if (!page) return;
+  projectsPager.style.transition = animated ? '' : 'none';
+  projectsPager.style.height = `${page.scrollHeight}px`;
+  if (!animated) window.requestAnimationFrame(() => { projectsPager.style.transition = ''; });
+}
+
+function scrollToProjectTab(index, behavior = 'smooth') {
+  projectsPager.scrollTo({ left: index * projectsPagerWidth(), behavior });
 }
 
 function projectCardMarkup(project, tab, isLocked = false) {
@@ -297,19 +305,34 @@ function renderProjects() {
   });
 }
 
-function setProjectsTab(tab) {
+function setProjectsTab(tab, { scroll = true } = {}) {
   if (!projectTabNames.includes(tab)) return;
-  const currentPage = projectsPager.querySelector(`[data-project-page="${activeProjectTab}"]`);
-  if (currentPage) projectScrollPositions[activeProjectTab] = currentPage.scrollTop;
+  projectScrollPositions[activeProjectTab] = window.scrollY;
   activeProjectTab = tab;
+  const index = projectTabNames.indexOf(tab);
   projectsTabs.querySelectorAll('[data-project-tab]').forEach(button => button.classList.toggle('is-active', button.dataset.projectTab === tab));
   projectsPager.querySelectorAll('[data-project-page]').forEach(page => page.classList.toggle('is-active', page.dataset.projectPage === tab));
-  const nextPage = projectsPager.querySelector(`[data-project-page="${tab}"]`);
-  if (nextPage) nextPage.scrollTop = projectScrollPositions[tab];
   projectsTabsLine.style.transition = '';
-  layoutProjectPages(projectTabNames.indexOf(tab), true);
-  layoutProjectsTabs();
+  if (scroll) scrollToProjectTab(index);
+  layoutProjectPages(index, true);
+  layoutProjectsTabs(index);
+  window.scrollTo({ top: projectScrollPositions[tab] || 0, behavior: 'auto' });
 }
+
+/* Полоска вкладок едет за пальцем, активная вкладка — по позиции прилипания */
+let projectsSettleTimer = 0;
+projectsPager.addEventListener('scroll', () => {
+  const progress = projectsPager.scrollLeft / (projectsPagerWidth() || 1);
+  projectsTabsLine.style.transition = 'none';
+  layoutProjectsTabs(progress);
+  window.clearTimeout(projectsSettleTimer);
+  projectsSettleTimer = window.setTimeout(() => {
+    const index = Math.max(0, Math.min(projectTabNames.length - 1, Math.round(progress)));
+    projectsTabsLine.style.transition = '';
+    if (projectTabNames[index] !== activeProjectTab) setProjectsTab(projectTabNames[index], { scroll: false });
+    else layoutProjectPages(index, true);
+  }, 90);
+}, { passive: true });
 
 projectsTabs.addEventListener('click', event => {
   const button = event.target.closest('[data-project-tab]');
@@ -505,10 +528,12 @@ function openProjectDetail(project) {
   activeProjectDetailId = project.id;
   projectProposalsNewestFirst = true;
   renderProjectDetail(project);
-  projectDetailScroll.scrollTop = 0;
-  projectDetail.classList.add('is-open');
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  // сначала показываем блок, и только следующим кадром запускаем выезд
+  projectDetail.classList.add('is-mounted');
   projectsScreen.classList.add('is-detail-open');
   projectDetail.setAttribute('aria-hidden', 'false');
+  window.requestAnimationFrame(() => projectDetail.classList.add('is-open'));
 }
 
 function closeProjectDetail() {
@@ -516,7 +541,10 @@ function closeProjectDetail() {
   projectsScreen.classList.remove('is-detail-open');
   projectDetail.setAttribute('aria-hidden', 'true');
   window.setTimeout(() => {
-    if (!projectDetail.classList.contains('is-open')) activeProjectDetailId = null;
+    if (projectDetail.classList.contains('is-open')) return;
+    projectDetail.classList.remove('is-mounted');
+    activeProjectDetailId = null;
+    layoutProjectPages(projectTabNames.indexOf(activeProjectTab), false);
   }, 280);
 }
 
@@ -780,12 +808,12 @@ projectsOverlay.addEventListener('click', event => {
   if (action === 'profile') openExternalProfile(proposalProfile(proposal), 'projects');
   if (action === 'message') show('messages');
   if (action === 'hide') {
-    const scrollTop = projectDetailScroll.scrollTop;
+    const scrollTop = window.scrollY;
     project.proposals = project.proposals.filter(item => item.id !== proposal.id);
     project.responses = project.proposals.length;
     renderProjects();
     renderProjectDetail(project);
-    projectDetailScroll.scrollTop = scrollTop;
+    window.scrollTo({ top: scrollTop, behavior: 'auto' });
   }
 });
 
@@ -810,42 +838,31 @@ document.addEventListener('keydown', event => {
   else if (projectDetail.classList.contains('is-open')) closeProjectDetail();
 });
 
+/* Горизонталь листает сам пейджер со scroll-snap; от указателя остаётся
+   потягивание вниз для обновления ленты и подавление клика после свайпа. */
 let projectGesture = null;
 projectsPager.addEventListener('pointerdown', event => {
   if (event.target.closest('.project-media, button, input')) return;
   cancelPendingProjectOpen();
   suppressProjectCardClick = false;
-  const page = event.target.closest('.projects-page');
-  projectGesture = { x: event.clientX, y: event.clientY, page, pulling: Boolean(page && page.scrollTop <= 0) };
-});
+  projectGesture = { x: event.clientX, y: event.clientY, pulling: window.scrollY <= 0 };
+}, { passive: true });
+
 projectsPager.addEventListener('pointermove', event => {
   if (!projectGesture) return;
   const dx = event.clientX - projectGesture.x;
   const dy = event.clientY - projectGesture.y;
   if (Math.max(Math.abs(dx), Math.abs(dy)) > 8) suppressProjectCardClick = true;
-  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
-    const index = projectTabNames.indexOf(activeProjectTab);
-    const progress = Math.max(0, Math.min(2, index - dx / projectsPagerWidth()));
-    projectsTabsLine.style.transition = 'none';
-    layoutProjectsTabs(progress);
-    layoutProjectPages(progress, false);
-  } else if (projectGesture.pulling && dy > 14) {
+  if (projectGesture.pulling && dy > 14 && Math.abs(dy) > Math.abs(dx)) {
     projectsRefresh.classList.add('is-visible');
     projectsRefresh.querySelector('span').textContent = dy > 62 ? 'Release to refresh' : 'Pull to refresh';
   }
-});
+}, { passive: true });
+
 projectsPager.addEventListener('pointerup', event => {
   if (!projectGesture) return;
   const dx = event.clientX - projectGesture.x;
   const dy = event.clientY - projectGesture.y;
-  if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)) {
-    const direction = dx < 0 ? 1 : -1;
-    setProjectsTab(projectTabNames[Math.max(0, Math.min(2, projectTabNames.indexOf(activeProjectTab) + direction))]);
-  } else {
-    projectsTabsLine.style.transition = '';
-    layoutProjectPages(projectTabNames.indexOf(activeProjectTab), true);
-    layoutProjectsTabs();
-  }
   if (projectGesture.pulling && dy > 62 && Math.abs(dy) > Math.abs(dx)) {
     projectsRefresh.classList.add('is-loading', 'is-visible');
     projectsRefresh.querySelector('span').textContent = 'Refreshing…';
@@ -861,15 +878,13 @@ projectsPager.addEventListener('pointerup', event => {
   }
   projectGesture = null;
   window.setTimeout(() => { suppressProjectCardClick = false; }, 0);
-});
+}, { passive: true });
+
 projectsPager.addEventListener('pointercancel', () => {
   projectGesture = null;
   suppressProjectCardClick = false;
   projectsRefresh.classList.remove('is-visible');
-  projectsTabsLine.style.transition = '';
-  layoutProjectPages(projectTabNames.indexOf(activeProjectTab), true);
-  layoutProjectsTabs();
-});
+}, { passive: true });
 
 window.addEventListener('resize', () => layoutProjectsTabs());
 renderProjects();

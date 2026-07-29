@@ -2,11 +2,10 @@
 
 /* ─────────────── Профиль ─────────────── */
 .profile-scroll {
-  position: absolute; inset: 0;
-  overflow-x: hidden; overflow-y: auto; scrollbar-width: none;
+  /* Не отдельный скроллер: содержимое едет вместе с документом */
+  position: static;
+  overflow: visible;
   overflow-anchor: none;
-  overscroll-behavior-x: none;
-  touch-action: pan-y;
   padding: 0 0 calc(var(--tabbar-height) + 88px);
 }
 .profile-scroll::-webkit-scrollbar { display: none; }
@@ -74,7 +73,7 @@
   display: flex; flex-wrap: nowrap; align-items: flex-start;
   overflow-x: auto; overflow-y: hidden;
   scroll-snap-type: x mandatory; scroll-behavior: smooth;
-  overscroll-behavior: contain; scrollbar-width: none;
+  overscroll-behavior-x: contain; overscroll-behavior-y: auto; scrollbar-width: none;
   transition: height .32s cubic-bezier(.22,.78,.22,1);
 }
 .pager::-webkit-scrollbar { display: none; }
@@ -102,8 +101,8 @@
 .grid figcaption img { width: 13px; height: 13px; }
 .grid--video figure { aspect-ratio: 9 / 16; }
 .upload-more {
-  position: absolute; left: var(--gutter); right: var(--gutter); bottom: calc(var(--tabbar-height) + 16px); z-index: 7;
-  width: auto; margin: 0;
+  bottom: calc(var(--tabbar-height) + 16px); z-index: 7;
+  width: calc(100% - 2 * var(--gutter)); max-width: calc(480px - 2 * var(--gutter));
   box-shadow: 0 8px 28px rgba(0, 0, 0, .42);
 }
 .screen-page[data-screen="profile"].is-external-profile .upload-more { display: none; }
@@ -198,7 +197,7 @@
   width: 100%; padding: 0 calc(50% - 28px); display: flex; gap: 10px;
   overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-snap-type: x proximity;
   pointer-events: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: contain; overscroll-behavior-y: auto;
 }
 .profile-photo-viewer__thumbs::-webkit-scrollbar { display: none; }
 .profile-photo-viewer__thumb {

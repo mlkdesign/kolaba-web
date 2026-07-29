@@ -30,7 +30,9 @@ function swipeToDismiss(viewer, { stage, backdrop, onClose, isOpen }) {
   viewer.addEventListener('pointerdown', event => {
     if (!event.isPrimary) return;
     if (isOpen && !isOpen()) return;
-    if (event.target.closest('button')) return;
+    // подложка — тоже кнопка, но с неё смахивать можно
+    const button = event.target.closest('button');
+    if (button && !/backdrop/.test(button.className)) return;
     gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: null, time: performance.now() };
   });
 

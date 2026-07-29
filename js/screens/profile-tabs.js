@@ -17,14 +17,14 @@ let pagerWidthValue = pager.clientWidth || window.innerWidth;
 const pagerWidth = () => pagerWidthValue || pager.clientWidth || window.innerWidth;
 
 function updateProfileTabsMask() {
-  const scrollRect = profileScroll.getBoundingClientRect();
+  const appRect = document.getElementById('app').getBoundingClientRect();
   const tabsRect = tabs.getBoundingClientRect();
   const safeTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-top')) || 0;
-  const reachedStickyPosition = tabsRect.top <= scrollRect.top + safeTop + 2;
-  tabs.classList.toggle('is-stuck', profileScroll.scrollTop > 0 && reachedStickyPosition);
+  const reachedStickyPosition = tabsRect.top <= Math.max(0, appRect.top) + safeTop + 2;
+  tabs.classList.toggle('is-stuck', window.scrollY > 0 && reachedStickyPosition);
 }
 
-profileScroll.addEventListener('scroll', updateProfileTabsMask, { passive: true });
+window.addEventListener('scroll', updateProfileTabsMask, { passive: true });
 
 function layoutTabs(progress = profileTabNames.indexOf(activeProfileTab)) {
   const buttons = [...tabs.querySelectorAll('.tabs__item')];

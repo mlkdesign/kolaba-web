@@ -101,7 +101,7 @@ function shortBio() {
 }
 
 function renderSettingsMain(preserveScroll = false) {
-  const previous = preserveScroll ? settingsScroll.scrollTop : 0;
+  const previous = preserveScroll ? window.scrollY : 0;
   settingsState.isPro = Boolean(state.isProjectsPro);
   const name = document.getElementById('nameOut').textContent;
   const rawHandle = document.getElementById('handleOut').textContent.replace(/^@/, '');
@@ -171,7 +171,7 @@ function renderSettingsMain(preserveScroll = false) {
     ])}
     <div class="settings-bottom"><button type="button" data-settings-action="logout">Log out</button><button type="button" data-settings-action="delete-account">Delete account</button></div>`;
   renderSettingsProfileImages();
-  settingsScroll.scrollTop = previous;
+  window.scrollTo({ top: previous, behavior: 'auto' });
 }
 
 function setSettingsImageAsAvatar(id) {
@@ -258,7 +258,7 @@ function openSettings() {
   settingsMain.hidden = false;
   settingsSubpage.hidden = true;
   renderSettingsMain();
-  settingsScroll.scrollTop = 0;
+  window.scrollTo({ top: 0, behavior: 'auto' });
   show('settings');
 }
 
@@ -267,7 +267,7 @@ function closeSettingsSubpage() {
   settingsSubpage.hidden = true;
   settingsMain.hidden = false;
   renderSettingsMain();
-  settingsScroll.scrollTop = settingsMainScrollTop;
+  window.scrollTo({ top: settingsMainScrollTop, behavior: 'auto' });
   persistSettingsNow();
 }
 
@@ -281,13 +281,13 @@ document.querySelector('.profile-settings-button').addEventListener('click', ope
 document.getElementById('settingsBack').addEventListener('click', leaveSettings);
 
 function beginSettingsSubpage(title, html) {
-  if (!settingsMain.hidden) settingsMainScrollTop = settingsScroll.scrollTop;
+  if (!settingsMain.hidden) settingsMainScrollTop = window.scrollY;
   settingsTitle.textContent = title;
   settingsMain.hidden = true;
   settingsSubpage.hidden = false;
   settingsSubpage.className = 'settings-subpage';
   settingsSubpage.innerHTML = html;
-  settingsScroll.scrollTop = 0;
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 function openSettingsField(action) {
