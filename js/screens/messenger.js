@@ -4,6 +4,7 @@ import { UNIQUE_VERTICAL_VIDEO_LIBRARY, generatedProfilePhotos, normalizedAuthor
 import { DEFAULT_AVATAR_URL, PHOTOS } from '../data/photos.js';
 import { openExternalProfile } from '../screens/profile.js';
 import { shuffled } from '../screens/start.js';
+import { onPageScroll, pageScrollTop, scrollPageTo } from '../ui/page-scroll.js';
 
 /* Messenger prototype: 20 in-memory chats, chat list interactions and conversation UI. */
 
@@ -183,7 +184,7 @@ function syncChatBadges() {
 }
 
 function renderChats(preserveScroll = true) {
-  const scrollTop = preserveScroll ? window.scrollY : 0;
+  const scrollTop = preserveScroll ? pageScrollTop() : 0;
   const ordered = sortedChats();
   messagesList.innerHTML = ordered.length
     ? ordered.map(chatRowMarkup).join('')
@@ -191,7 +192,7 @@ function renderChats(preserveScroll = true) {
   messagesList.querySelectorAll('.chat-avatar').forEach((image, index) => {
     image.addEventListener('error', () => { image.src = PHOTOS[index % PHOTOS.length]; }, { once: true });
   });
-  window.scrollTo({ top: scrollTop, behavior: 'auto' });
+  scrollPageTo(scrollTop, 'auto');
   messagesHead.classList.toggle('is-scrolled', scrollTop > 0);
   syncChatBadges();
 }
@@ -274,7 +275,7 @@ function renderConversation(keepPosition = false) {
 }
 
 function openConversation(chat, options = {}) {
-  messagesListScrollTop = window.scrollY;
+  messagesListScrollTop = pageScrollTop();
   currentChatId = chat.id;
   conversationReturnProfile = options.returnProfile || null;
   conversationReturnScreen = options.returnScreen || 'messages';
@@ -357,7 +358,7 @@ function closeConversation() {
   conversationReturnProfile = null;
   conversationReturnScreen = 'messages';
   renderChats(false);
-  requestAnimationFrame(() => window.scrollTo({ top: messagesListScrollTop, behavior: 'auto' }));
+  requestAnimationFrame(() => scrollPageTo(messagesListScrollTop, 'auto'));
 }
 
 function leaveConversation() {
@@ -502,9 +503,9 @@ messagesList.addEventListener('click', event => {
   openConversation(chat);
 });
 
-window.addEventListener('scroll', () => messagesHead.classList.toggle('is-scrolled', window.scrollY > 0), { passive: true });
+onPageScroll(() => messagesHead.classList.toggle('is-scrolled', pageScrollTop() > 0));
 messagesList.addEventListener('pointerdown', event => {
-  if (window.scrollY > 0 || event.target.closest('.chat-row__action')) return;
+  if (pageScrollTop() > 0 || event.target.closest('.chat-row__action')) return;
   messagesPull = { y: event.clientY, distance: 0 };
 });
 messagesList.addEventListener('pointermove', event => {

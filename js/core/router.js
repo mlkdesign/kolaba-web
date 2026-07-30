@@ -9,6 +9,7 @@ import { markAllNotificationsRead } from '../screens/notifications.js';
 import { activeProfileTab, layoutProfilePages, layoutTabs, profileTabNames, updateProfileTabsMask } from '../screens/profile-tabs.js';
 import { openOwnProfile } from '../screens/profile.js';
 import { closeProjectDetail, layoutProjectsTabs } from '../screens/projects.js';
+import { scrollPageTo } from '../ui/page-scroll.js';
 
 const SCREENS = ['start', 'auth', 'setup1', 'setup2', 'projects', 'messages', 'feed',
   'profileReels', 'notifications', 'notificationClip', 'notificationProject',
@@ -36,7 +37,7 @@ function applyScreen(name) {
   document.documentElement.classList.toggle('is-locked',
     LOCKED_SCREENS.has(name) || (name === 'messages' && conversationOpen));
   // на новом экране начинаем сверху
-  if (name !== currentScreen) window.scrollTo({ top: 0, behavior: 'auto' });
+  if (name !== currentScreen) scrollPageTo(0, 'auto');
 
   if (name !== 'notificationClip') document.getElementById('notificationClipVideo')?.pause();
   if (name !== 'profileReels') pauseProfileReels();
@@ -95,6 +96,9 @@ document.addEventListener('click', event => {
   const back = event.target.closest('[data-back]');
   if (back) show(back.dataset.back);
 });
+
+/* Кнопка под мокапом телефона — в вебе её нет */
+document.getElementById('goStart')?.addEventListener('click', () => show('start'));
 
 /* Стартовый экран: из хеша, если он есть. Заменяем запись, чтобы первый
    «назад» уводил со страницы, а не по кругу внутри приложения. */

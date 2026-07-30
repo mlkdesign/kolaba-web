@@ -6,6 +6,7 @@
 
 import { startViewport } from './ui/viewport.js';
 import { startKeyboard } from './ui/keyboard.js';
+import { startMockup } from './ui/mockup.js';
 import { startRouter } from './core/router.js';
 
 /* Экраны — порядок важен, он повторяет старый app.js → settings.js → messenger.js */
@@ -26,4 +27,5 @@ import './screens/messenger.js';
 
 startViewport();
 startKeyboard();
+startMockup();
 startRouter();

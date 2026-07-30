@@ -3,6 +3,7 @@ import { show } from '../core/router.js';
 import { state } from '../core/state.js';
 import { openOwnProfile, syncOwnProfilePhotos } from '../screens/profile.js';
 import { PROFILE_IMAGE_LIMIT, openProfileImagePicker, profileImages, removeProfileImage, renderProfileImages } from '../screens/setup.js';
+import { pageScrollTop, scrollPageTo } from '../ui/page-scroll.js';
 import { countryByCode, flagFor, openPicker } from '../ui/picker.js';
 
 /* Settings: persistent prototype state, grouped list and lightweight subpages. */
@@ -101,7 +102,7 @@ function shortBio() {
 }
 
 function renderSettingsMain(preserveScroll = false) {
-  const previous = preserveScroll ? window.scrollY : 0;
+  const previous = preserveScroll ? pageScrollTop() : 0;
   settingsState.isPro = Boolean(state.isProjectsPro);
   const name = document.getElementById('nameOut').textContent;
   const rawHandle = document.getElementById('handleOut').textContent.replace(/^@/, '');
@@ -171,7 +172,7 @@ function renderSettingsMain(preserveScroll = false) {
     ])}
     <div class="settings-bottom"><button type="button" data-settings-action="logout">Log out</button><button type="button" data-settings-action="delete-account">Delete account</button></div>`;
   renderSettingsProfileImages();
-  window.scrollTo({ top: previous, behavior: 'auto' });
+  scrollPageTo(previous, 'auto');
 }
 
 function setSettingsImageAsAvatar(id) {
@@ -258,7 +259,7 @@ function openSettings() {
   settingsMain.hidden = false;
   settingsSubpage.hidden = true;
   renderSettingsMain();
-  window.scrollTo({ top: 0, behavior: 'auto' });
+  scrollPageTo(0, 'auto');
   show('settings');
 }
 
@@ -267,7 +268,7 @@ function closeSettingsSubpage() {
   settingsSubpage.hidden = true;
   settingsMain.hidden = false;
   renderSettingsMain();
-  window.scrollTo({ top: settingsMainScrollTop, behavior: 'auto' });
+  scrollPageTo(settingsMainScrollTop, 'auto');
   persistSettingsNow();
 }
 
@@ -281,13 +282,13 @@ document.querySelector('.profile-settings-button').addEventListener('click', ope
 document.getElementById('settingsBack').addEventListener('click', leaveSettings);
 
 function beginSettingsSubpage(title, html) {
-  if (!settingsMain.hidden) settingsMainScrollTop = window.scrollY;
+  if (!settingsMain.hidden) settingsMainScrollTop = pageScrollTop();
   settingsTitle.textContent = title;
   settingsMain.hidden = true;
   settingsSubpage.hidden = false;
   settingsSubpage.className = 'settings-subpage';
   settingsSubpage.innerHTML = html;
-  window.scrollTo({ top: 0, behavior: 'auto' });
+  scrollPageTo(0, 'auto');
 }
 
 function openSettingsField(action) {
